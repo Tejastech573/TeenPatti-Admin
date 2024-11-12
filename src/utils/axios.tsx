@@ -9,7 +9,7 @@ interface AdaptAxiosRequestConfig extends AxiosRequestConfig {
 // Determine the base URL based on the environment
 const baseURL =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "https://admin-panel-env.eba-wrphxypt.ap-south-1.elasticbeanstalk.com/api";
+  "http://admin-panel-env.eba-wrphxypt.ap-south-1.elasticbeanstalk.com/api";
 
 // Create an axios instance with the dynamic base URL
 export const axiosInstance = axios.create({
