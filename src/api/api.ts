@@ -75,3 +75,12 @@ export const UserUnBlock = async (userId: string) => {
     throw error;
   }
 };
+export const addDailyReward = async (addDailyReward: any) => {
+  try {
+    const response = await axiosInstance.post(`/settings`, addDailyReward);
+    return response.data;
+  } catch (error) {
+    console.error("Fetch user error:", error);
+    throw error;
+  }
+};
