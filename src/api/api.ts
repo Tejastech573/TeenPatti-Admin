@@ -84,3 +84,16 @@ export const addDailyReward = async (addDailyReward: any) => {
     throw error;
   }
 };
+
+export const PlayerNameUpdate = async (name: any, userId: any) => {
+  try {
+    const response = await axiosInstance.post(`/user/profile`, {
+      userId: userId,
+      name: name,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Fetch user error:", error);
+    throw error;
+  }
+};

@@ -1,16 +1,16 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PlayerTable from "./PlayerTable";
 import { LuTrash } from "react-icons/lu";
 import { GoChevronDown } from "react-icons/go";
 import useSnackbar from "@/hooks/useSnackbar";
-import DummyMenu from "../BlockedPlayer/DummyMenu";
-import { UserBlock } from "@/api/api";
+import Menu from "../Players/Menu";
+import { PlayerNameUpdate, UserBlock } from "@/api/api";
 
 function Players() {
   const [isOpen, setIsOpen] = useState(false);
+  const [playerUserName, setPlayerUserName] = useState(false);
   const [totalChips, setTotalChips] = useState<string>("");
-
   const [PlayerModel, setPlayerModel] = useState<{
     open: boolean;
     userId?: string;
@@ -22,7 +22,11 @@ function Players() {
     showSnackbar("Delete all player...", "success");
   };
 
-  const HandleUpdate = () => {};
+  const HandleUpdate = async () => {
+    await PlayerNameUpdate(playerUserName, PlayerModel.userId);
+    setPlayerModel({ open: false });
+    showSnackbar("Player name edit successfully...", "success");
+  };
   const HandleBlockUser = async () => {
     if (PlayerModel.userId) {
       const response = await UserBlock(PlayerModel.userId);
@@ -41,20 +45,18 @@ function Players() {
           `}
       </style>
       {PlayerModel && (
-        <DummyMenu
+        <Menu
           isBlock={true}
           name={PlayerModel.name}
           openPopUp={PlayerModel.open}
           closePopUp={() => setPlayerModel({ open: false })}
           HandleBlockUser={HandleBlockUser}
           HandleUpdate={HandleUpdate}
+          setPlayerUserName={setPlayerUserName}
         />
       )}
 
       <div className="flex flex-col items-center justify-between px-4 py-4 md:flex-row md:px-6 md:py-5">
-        {/* <div className="text-dark mb-4 text-2xl font-medium md:mb-0 md:text-3xl">
-            Players
-          </div> */}
         <div className="text-dark text-xl font-semibold md:text-2xl">
           Players
         </div>
