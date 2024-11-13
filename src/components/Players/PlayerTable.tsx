@@ -63,6 +63,14 @@ export default function PlayerTable({
 
   const columnDefs: Array<ColDef<RowData>> = [
     {
+      field: "name",
+      headerName: "Name",
+      width: 120,
+      minWidth: 120,
+      maxWidth: 140,
+      cellRenderer: (params: any) => <span>{params.value}</span>,
+    },
+    {
       field: "invoiceId",
       headerName: "Invoice Id",
       width: 210,

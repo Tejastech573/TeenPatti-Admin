@@ -45,7 +45,6 @@ export default function BlockedPlayerTable({ setBlockPlayerModel }: any) {
         avatar: "",
       }));
       setRowData(mappedData);
-      console.log("User data:", mappedData);
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
@@ -55,15 +54,45 @@ export default function BlockedPlayerTable({ setBlockPlayerModel }: any) {
     {
       field: "name",
       headerName: "Name",
+      width: 120,
+      minWidth: 120,
+      maxWidth: 140,
       cellRenderer: (params: any) => <span>{params.value}</span>,
     },
-    { field: "invoiceId", headerName: "Invoice Id" },
-    { field: "chips", headerName: "Chips" },
-    { field: "loginType", headerName: "Login type" },
-    { field: "version", headerName: "Version" },
+    {
+      field: "invoiceId",
+      headerName: "Invoice Id",
+      width: 210,
+      minWidth: 210,
+      maxWidth: 230,
+    },
+    {
+      field: "chips",
+      headerName: "Chips",
+      width: 120,
+      minWidth: 120,
+      maxWidth: 140,
+    },
+    {
+      field: "loginType",
+      headerName: "Login type",
+      width: 120,
+      minWidth: 120,
+      maxWidth: 140,
+    },
+    {
+      field: "version",
+      headerName: "Version",
+      width: 120,
+      minWidth: 120,
+      maxWidth: 140,
+    },
     {
       field: "lastLogin",
       headerName: "Last Login",
+      width: 120,
+      minWidth: 120,
+      maxWidth: 140,
       cellRenderer: (params: any) => (
         <div className="flex items-center gap-2">
           <CiClock2 className="h-4 w-4 text-green-500" />
@@ -74,6 +103,9 @@ export default function BlockedPlayerTable({ setBlockPlayerModel }: any) {
     {
       field: "createdAt",
       headerName: "Created at",
+      width: 120,
+      minWidth: 120,
+      maxWidth: 140,
       cellRenderer: (params: any) => (
         <div className="flex items-center gap-2">
           <FaCalendarAlt className="h-4 w-4 text-green-500" />
@@ -83,6 +115,9 @@ export default function BlockedPlayerTable({ setBlockPlayerModel }: any) {
     },
     {
       field: "email",
+      width: 120,
+      minWidth: 120,
+      maxWidth: 140,
       headerName: "Email",
       cellRenderer: (params: any) => (
         <div className="flex items-center gap-2">
@@ -93,6 +128,9 @@ export default function BlockedPlayerTable({ setBlockPlayerModel }: any) {
     },
     {
       headerName: "Action",
+      width: 130,
+      minWidth: 100,
+      maxWidth: 150,
       cellRenderer: (params: any) => (
         <button
           onClick={() => {
