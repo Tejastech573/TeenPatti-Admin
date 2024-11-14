@@ -1,16 +1,34 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import BlockedPlayerTable from "./BlockedPlayerTable";
 import { CiSettings } from "react-icons/ci";
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import DummyMenu from "./DummyMenu";
-import { UserUnBlock } from "@/api/api";
+import { getBlockUser, UserUnBlock } from "@/api/api";
 import useSnackbar from "@/hooks/useSnackbar";
+
+interface RowData {
+  name: string;
+  invoiceId: string;
+  chips: number;
+  loginType: string;
+  version: string;
+  lastLogin: string;
+  createdAt: string;
+  email: string;
+  avatar: string;
+}
 
 function BlockedPlayer() {
   const HandleUpdate = () => {
     alert("Update.");
   };
+
+  const [rowData, setRowData] = useState<RowData[]>([]);
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   const [blockPlayerModel, setBlockPlayerModel] = useState<{
     open: boolean;
@@ -23,6 +41,26 @@ function BlockedPlayer() {
     if (blockPlayerModel.userId) {
       const response = await UserUnBlock(blockPlayerModel.userId);
       showSnackbar(response.message, "default");
+    }
+  };
+
+  const fetchUserData = async () => {
+    try {
+      const response = await getBlockUser();
+      const mappedData = response.map((user: any) => ({
+        name: user.name,
+        invoiceId: user._id,
+        chips: user.chips_balance,
+        loginType: user.login_type,
+        version: user.version,
+        lastLogin: new Date(user.last_login).toLocaleDateString(),
+        createdAt: new Date(user.created_at).toLocaleDateString(),
+        email: user.email,
+        avatar: "",
+      }));
+      setRowData(mappedData);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
     }
   };
 
@@ -48,23 +86,17 @@ function BlockedPlayer() {
       )}
 
       <div className="flex flex-col items-center justify-between px-4 py-4 md:flex-row md:px-6 md:py-5">
-        {/* <div className="text-dark mb-4 text-2xl font-semibold md:mb-0 md:text-3xl">
-          Blocked Player
-        </div> */}
         <div className="text-xl font-semibold text-black md:text-2xl">
           Blocked Player
         </div>
 
-        {/* Search Bar and Settings */}
         <div className="flex w-full items-center space-x-4 md:w-auto">
-          {/* Search Form */}
           <form
             action="https://formbold.com/s/unique_form_id"
             method="POST"
             className="w-full md:w-auto"
           >
             <div className="relative w-full md:w-64 lg:w-[350px]">
-              {/* Search Icon */}
               <button className="absolute left-3 top-1/2 -translate-y-1/2 transform">
                 <HiMagnifyingGlass className="h-5 w-5 text-white" />
               </button>
@@ -77,13 +109,15 @@ function BlockedPlayer() {
             </div>
           </form>
 
-          {/* Settings Icon */}
           <div className="cursor-pointer rounded-xl bg-gray-400 p-2.5 text-white">
             <CiSettings className="h-6 w-6 md:h-7 md:w-7" />
           </div>
         </div>
       </div>
-      <BlockedPlayerTable setBlockPlayerModel={setBlockPlayerModel} />
+      <BlockedPlayerTable
+        rowData={rowData}
+        setBlockPlayerModel={setBlockPlayerModel}
+      />
     </div>
   );
 }

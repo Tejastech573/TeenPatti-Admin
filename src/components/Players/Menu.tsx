@@ -23,7 +23,6 @@ const Menu: React.FC<PopUpProps> = ({
   HandleUpdate,
   isBlock,
 }) => {
-  const [isEditing, setIsEditing] = useState(false);
   const [editableName, setEditableName] = useState(name);
   useEffect(() => {
     setEditableName(name || "");

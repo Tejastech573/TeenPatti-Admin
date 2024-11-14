@@ -3,6 +3,7 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { ColDef } from "ag-grid-community";
+import Loader from "../Loader";
 
 interface RowData {
   name: string;
@@ -85,6 +86,7 @@ const CustomTable: React.FC<CustomBlockedPlayerTableProps> = ({
           }
         }
       `}</style>
+
       <AgGridReact
         rowData={rowData}
         columnDefs={columnDefs}
@@ -97,6 +99,7 @@ const CustomTable: React.FC<CustomBlockedPlayerTableProps> = ({
         }}
         animateRows={true}
         enableCellTextSelection={true}
+        overlayNoRowsTemplate="<span>Loading...</span>"
       />
     </div>
   );

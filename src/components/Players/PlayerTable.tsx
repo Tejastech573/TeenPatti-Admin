@@ -25,42 +25,11 @@ interface RowData {
 
 export default function PlayerTable({
   setPlayerModel,
-  setTotalChips = "",
+  rowData,
 }: {
   setPlayerModel: Dispatch<SetStateAction<any>>;
-  setTotalChips: any;
+  rowData: any;
 }) {
-  const [rowData, setRowData] = useState<RowData[]>([]);
-  const [isBlocked] = useState<boolean>(false);
-
-  useEffect(() => {
-    fetchUserData();
-  }, [isBlocked]);
-
-  const fetchUserData = async () => {
-    try {
-      const response = await getUnBlockUser();
-      const mappedData = response.map((user: any) => ({
-        name: user.name,
-        invoiceId: user._id,
-        chips: user.chips_balance,
-        loginType: user.login_type,
-        version: user.version,
-        lastLogin: new Date(user.last_login).toLocaleDateString(),
-        createdAt: new Date(user.created_at).toLocaleDateString(),
-        email: user.email,
-      }));
-      const TotalChips = response.reduce(
-        (sum: number, user: any) => sum + user.chips_balance,
-        0,
-      );
-      setTotalChips(TotalChips);
-      setRowData(mappedData);
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-  };
-
   const columnDefs: Array<ColDef<RowData>> = [
     {
       field: "name",

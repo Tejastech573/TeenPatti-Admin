@@ -22,34 +22,10 @@ interface RowData {
   avatar: string;
 }
 
-export default function BlockedPlayerTable({ setBlockPlayerModel }: any) {
-  const [rowData, setRowData] = useState<RowData[]>([]);
-  const [isBlocked] = useState<boolean>(true);
-
-  useEffect(() => {
-    fetchUserData();
-  }, [isBlocked]);
-
-  const fetchUserData = async () => {
-    try {
-      const response = await getBlockUser();
-      const mappedData = response.map((user: any) => ({
-        name: user.name,
-        invoiceId: user._id,
-        chips: user.chips_balance,
-        loginType: user.login_type,
-        version: user.version,
-        lastLogin: new Date(user.last_login).toLocaleDateString(),
-        createdAt: new Date(user.created_at).toLocaleDateString(),
-        email: user.email,
-        avatar: "",
-      }));
-      setRowData(mappedData);
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-  };
-
+export default function BlockedPlayerTable({
+  setBlockPlayerModel,
+  rowData,
+}: any) {
   const columnDefs: Array<ColDef<RowData>> = [
     {
       field: "name",
