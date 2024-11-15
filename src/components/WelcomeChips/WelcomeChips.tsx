@@ -10,6 +10,7 @@ function WelcomeChips() {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
+    console.log("welcome");
     const FetchData = async () => {
       setLoading(true);
       try {
@@ -58,17 +59,19 @@ function WelcomeChips() {
             placeholder="Enter Chips"
             value={dailyRewardValue}
             onChange={handleInputChange}
-            className="border border-gray-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="rounded-md border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-600 text-white rounded-md font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="rounded-md bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             Submit
           </button>
         </form>
         <p className="text-lg font-bold">
-          {!loading && isSubmitted || welcomeChip ? `Welcome Chips: ${welcomeChip}` : loading && <Loader />}
+          {(!loading && isSubmitted) || welcomeChip
+            ? `Welcome Chips: ${welcomeChip}`
+            : loading && <Loader />}
         </p>
       </div>
     </div>
