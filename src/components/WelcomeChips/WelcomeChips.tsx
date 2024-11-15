@@ -10,7 +10,6 @@ function WelcomeChips() {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
-    console.log("welcome");
     const FetchData = async () => {
       setLoading(true);
       try {
