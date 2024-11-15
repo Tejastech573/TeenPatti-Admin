@@ -1,4 +1,5 @@
-import { axiosInstance } from "@/utils/axios";
+import { axiosInstance } from "./axiosInstance";
+
 interface LoginResponse {
   status: string;
   token?: string;
