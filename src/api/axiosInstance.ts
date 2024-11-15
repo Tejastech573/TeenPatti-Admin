@@ -8,7 +8,10 @@ interface AdaptAxiosRequestConfig extends AxiosRequestConfig {
 }
 
 // Determine the base URL from environment variables
-const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(
+  "http://",
+  "https://",
+);
 
 // Create an axios instance with the dynamic base URL and timeout
 export const axiosInstance = axios.create({
