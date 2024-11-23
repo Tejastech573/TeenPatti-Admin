@@ -1,3 +1,4 @@
+// src/api/axiosInstance.ts
 import axios, { AxiosRequestConfig, AxiosRequestHeaders } from "axios";
 import { deleteCookie, getCookie } from "cookies-next";
 
@@ -6,14 +7,16 @@ interface AdaptAxiosRequestConfig extends AxiosRequestConfig {
   headers: AxiosRequestHeaders;
 }
 
-// Determine the base URL based on the environment
-const baseURL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "http://admin-panel-env.eba-wrphxypt.ap-south-1.elasticbeanstalk.com/api";
+// Determine the base URL from environment variables and enforce HTTPS
+const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(
+  "http://",
+  "https://",
+);
 
-// Create an axios instance with the dynamic base URL
+// Create an axios instance with the dynamic base URL and a 20-second timeout
 export const axiosInstance = axios.create({
   baseURL,
+  timeout: 20000, // 20 seconds
 });
 
 // Request Interceptor
@@ -23,7 +26,6 @@ axiosInstance.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-
     return config as AdaptAxiosRequestConfig;
   },
   (error) => {
@@ -35,23 +37,25 @@ axiosInstance.interceptors.request.use(
 // Response Interceptor
 axiosInstance.interceptors.response.use(
   async (response) => {
-    // Check if response status indicates unauthorized access
+    // If the API returns status 405, clear cookies and redirect to the login page
     if (response.data.status === "405") {
-      // Delete authentication-related cookies
       deleteCookie("token");
       deleteCookie("userId");
       deleteCookie("username");
-
-      // Redirect to login page
       window.location.href = "/";
     }
-
     return response;
   },
   async (error) => {
     console.error("Response error:", error);
 
-    // Handle specific error status codes if needed
+    // Timeout Error Handling
+    if (error.code === "ECONNABORTED") {
+      console.error("Request timed out.");
+      // You could add additional handling here, like showing a user notification
+    }
+
+    // Unauthorized Error Handling
     if (error.response?.status === 401) {
       deleteCookie("token");
       window.location.href = "/";
