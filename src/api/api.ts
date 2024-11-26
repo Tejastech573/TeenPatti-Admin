@@ -1,4 +1,11 @@
 import { axiosInstance } from "@/utils/axios";
+import { setCookie } from "cookies-next";
+interface LoginResponse {
+  status: string;
+  token?: string;
+  msg?: string;
+}
+
 interface LoginResponse {
   status: string;
   token?: string;
@@ -14,13 +21,19 @@ export const loginAdmin = async (
       username,
       password,
     });
-
+    if (response.data.token) {
+      setCookie("token", response.data.token);
+    }
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Login error:", error);
-    throw error;
+    return {
+      status: "error",
+      msg: error.response?.data?.msg || "An error occurred during login",
+    };
   }
 };
+
 export const getUnBlockUser = async () => {
   try {
     const response = await axiosInstance.get(`/admin/users?is_blocked=false`);

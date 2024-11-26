@@ -1,7 +1,10 @@
-import axios, { AxiosRequestConfig, AxiosRequestHeaders } from "axios";
-import { deleteCookie, getCookie } from "cookies-next";
+import axios, {
+  AxiosRequestConfig,
+  AxiosRequestHeaders,
+  AxiosError,
+} from "axios";
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
 
-// Define adapted Axios request configuration to ensure headers are properly typed
 interface AdaptAxiosRequestConfig extends AxiosRequestConfig {
   headers: AxiosRequestHeaders;
 }
@@ -23,7 +26,6 @@ axiosInstance.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-
     return config as AdaptAxiosRequestConfig;
   },
   (error) => {
@@ -34,23 +36,26 @@ axiosInstance.interceptors.request.use(
 
 // Response Interceptor
 axiosInstance.interceptors.response.use(
-  async (response) => {
+  (response) => {
     if (response.data.status === "405") {
       deleteCookie("token");
-      deleteCookie("userId");
-      deleteCookie("username");
       window.location.href = "/";
     }
-
     return response;
   },
-  async (error) => {
-    console.error("Response error:", error);
+  async (error: AxiosError) => {
     if (error.response?.status === 401) {
+      // Unauthorized: Clear cookies and redirect to login
       deleteCookie("token");
-      window.location.href = "/";
+      window.location.href = "/login";
+    } else if (error.response?.status === 400) {
+      // Handle 400 errors more gracefully
+      console.error("Bad Request:", error.response.data);
+      return Promise.reject({
+        status: 400,
+        message: error.response.data || "Bad Request",
+      });
     }
-
     return Promise.reject(error);
   },
 );
