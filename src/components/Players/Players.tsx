@@ -99,7 +99,7 @@ function Players() {
                     className="cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
                     onClick={() => {
                       console.log(`Selected: ${option}`);
-                      setIsOpen(false); // Close menu on option select
+                      setIsOpen(false);
                     }}
                   >
                     {option}

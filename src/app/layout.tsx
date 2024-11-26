@@ -2,8 +2,7 @@
 import "jsvectormap/dist/jsvectormap.css";
 import "flatpickr/dist/flatpickr.min.css";
 import "@/css/style.css";
-import React, { useEffect, useState } from "react";
-import Loader from "@/components/common/Loader/index";
+import React, { useEffect } from "react";
 import { SnackbarProvider } from "notistack";
 import { AuthProvider } from "./context/AuthContext";
 import { useRouter } from "next/navigation";
@@ -11,22 +10,15 @@ import { getCookie } from "cookies-next";
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-  const [loading, setLoading] = useState<boolean>(true);
-  useEffect(() => {
-    setTimeout(() => setLoading(false), 1000);
-  }, []);
-
+}) {
   const router = useRouter();
-  const token = getCookie("token");
-  // useEffect(() => {
-  //   if (!token) {
-  //     router.push("/login");
-  //   }
-  //   console.log("object :>> ");
-  // }, [token, router]);
+
+  useEffect(() => {
+    const token = getCookie("token");
+    if (!token) router.push("/login");
+  }, [router]);
 
   return (
     <html lang="en">
@@ -45,7 +37,7 @@ export default function RootLayout({
               anchorOrigin={{ vertical: "top", horizontal: "right" }}
               autoHideDuration={1000}
             >
-              {loading ? <Loader /> : children}
+              {children}
             </SnackbarProvider>
           </AuthProvider>
         </div>

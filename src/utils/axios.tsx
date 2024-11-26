@@ -35,14 +35,10 @@ axiosInstance.interceptors.request.use(
 // Response Interceptor
 axiosInstance.interceptors.response.use(
   async (response) => {
-    // Check if response status indicates unauthorized access
     if (response.data.status === "405") {
-      // Delete authentication-related cookies
       deleteCookie("token");
       deleteCookie("userId");
       deleteCookie("username");
-
-      // Redirect to login page
       window.location.href = "/";
     }
 
@@ -50,8 +46,6 @@ axiosInstance.interceptors.response.use(
   },
   async (error) => {
     console.error("Response error:", error);
-
-    // Handle specific error status codes if needed
     if (error.response?.status === 401) {
       deleteCookie("token");
       window.location.href = "/";

@@ -8,6 +8,7 @@ import { getCookie } from "cookies-next";
 
 export default function Home() {
   const [token, setToken] = useState<string | null>(null);
+  console.log("token :>> ", token);
 
   useEffect(() => {
     const userToken = getCookie("token") as string | null;

@@ -11,7 +11,6 @@ import useAuth from "@/app/context/AuthContext";
 
 export default function Login() {
   const router = useRouter();
-  const token = getCookie("token");
   const { setUser } = useAuth();
   const { showSnackbar } = useSnackbar();
   const [formData, setFormData] = useState({
@@ -29,12 +28,6 @@ export default function Login() {
     setShowPassword((prev) => !prev);
   };
 
-  // useEffect(() => {
-  //   if (token) {
-  //     router.push("/dashboard");
-  //   }
-  // }, [token, router]);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
@@ -44,19 +37,19 @@ export default function Login() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setErrors({ username: "", password: "" });
+
     const newErrors = { username: "", password: "" };
-    if (!formData.username || formData.username.length < 3) {
-      newErrors.username = "Username must be require";
+    if (!formData.username || formData.username.trim().length < 3) {
+      newErrors.username = "Username must be at least 3 characters long.";
     }
-
-    if (!formData.password || formData.password.length < 6) {
-      newErrors.password = "Password must be require.";
+    if (!formData.password || formData.password.trim().length < 6) {
+      newErrors.password = "Password must be at least 6 characters long.";
     }
-
     if (newErrors.username || newErrors.password) {
       setErrors(newErrors);
       return;
     }
+
     try {
       setLoader(true);
       const response: any = await loginAdmin(
@@ -64,18 +57,22 @@ export default function Login() {
         formData.password,
       );
       setUser(response.user);
-      setCookie("token", response.token, { maxAge: 60 * 60 * 24 * 30 });
+      setCookie("token", response.token, { maxAge: 60 * 60 * 24 * 30 }); // 30 days
       setCookie("userId", response.user._id, { maxAge: 60 * 60 * 24 * 30 });
       setCookie("UserName", response.user.name, { maxAge: 60 * 60 * 24 * 30 });
-      showSnackbar("Login successful", "success");
       router.push("/dashboard");
-      setLoader(false);
+      showSnackbar("Login successful", "success");
     } catch (error: any) {
-      // showSnackbar(error.response.data, "error");
+      const errorMessage =
+        error.response?.data?.message ||
+        "Invalid credentials, please try again.";
       setErrors((prev) => ({
         ...prev,
-        password: error.response?.data?.message || "Login failed",
+        password: errorMessage,
       }));
+      showSnackbar(errorMessage, "error");
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -109,6 +106,7 @@ export default function Login() {
                 type="text"
                 value={formData.username}
                 onChange={handleChange}
+                placeholder="Enter the username..."
                 autoComplete="username"
                 className="block w-full rounded-md border-0 px-3 py-2 text-gray-900 placeholder:text-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 sm:text-sm"
               />
@@ -131,7 +129,7 @@ export default function Login() {
               <div className="text-sm">
                 <a
                   href="#"
-                  className="font-semibold text-indigo-600 hover:text-indigo-500"
+                  className="font-semibold text-indigo-50 hover:text-indigo-500"
                 >
                   Forgot password?
                 </a>
@@ -142,6 +140,7 @@ export default function Login() {
                 id="password"
                 name="password"
                 type={showPassword ? "text" : "password"}
+                placeholder="Enter the password..."
                 value={formData.password}
                 onChange={handleChange}
                 autoComplete="current-password"
